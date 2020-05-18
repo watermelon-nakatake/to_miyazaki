@@ -3,7 +3,7 @@
 {% load static %}
 <head>
 	<meta charset="UTF-8">
-	<title>店舗情報|テイクアウト宮崎</title>
+	<title>{{ this_restaurant.restaurant_name_text }}店舗情報|テイクアウト宮崎</title>
 	<link rel="stylesheet" type="text/css" href="{% static  'info_edit/style.css' %}"/>
 	<link rel="stylesheet" type="text/css" href="../../static/info_edit/style.css"/>
 </head>
@@ -13,11 +13,11 @@
 	<div id="detail_img"><img src="../../static/info_edit/pizza-1209748_1280.jpg" alt="店名画像"></div>
 	<dl>
 		<dt>店名</dt>
-		<dd>はんぺん亭</dd>
+		<dd>{{ this_restaurant.restaurant_name_text }}</dd>
 		<dt>ジャンル</dt>
-		<dd>イタリアン</dd>
+		<dd>{{ this_restaurant.restaurant_name_text }}</dd>
 		<dt>所在地</dt>
-		<dd>宮崎市花がしま</dd>
+		<dd>{{ this_restaurant.restaurant_address }}</dd>
 		<dt>電話番号</dt>
 		<dd>0984-99-9999</dd>
 		<dt>e-mail</dt>
@@ -34,34 +34,16 @@
 </section>
 <section id="menu_list">
 	<ul class="menu_list_outer">
-		<li><img src="../../static/info_edit/pizza-1209748_1280.jpg" alt="料理画像">
+
+		{% for menu in menu_list %}
+			<li><img src="../../static/info_edit/pizza-1209748_1280.jpg" alt="料理画像">
 			<ul class="menu_list_inner">
-				<li>ペペロンチーノ</li>
-				<li>1000円</li>
-				<li>オールサーディンを使った美味しいパスタです。</li>
+				<li>{{ menu.menu_name_text }}</li>
+				<li>{{ menu.menu_price }}円</li>
+				<li>{{ menu.menu_comment_text }}</li>
 			</ul>
-		</li>
-		<li><img src="../../static/info_edit/pizza-1209748_1280.jpg" alt="料理画像">
-			<ul class="menu_list_inner">
-				<li>ペペロンチーノ</li>
-				<li>1000円</li>
-				<li>オールサーディンを使った美味しいパスタです。</li>
-			</ul>
-		</li>
-		<li><img src="../../static/info_edit/pizza-1209748_1280.jpg" alt="料理画像">
-			<ul class="menu_list_inner">
-				<li>ペペロンチーノ</li>
-				<li>1000円</li>
-				<li>オールサーディンを使った美味しいパスタです。</li>
-			</ul>
-		</li>
-		<li><img src="../../static/info_edit/pizza-1209748_1280.jpg" alt="料理画像">
-			<ul class="menu_list_inner">
-				<li>ペペロンチーノ</li>
-				<li>1000円</li>
-				<li>オールサーディンを使った美味しいパスタです。</li>
-			</ul>
-		</li>
+			</li>
+		{% endfor %}
 	</ul>
 </section>
 <section id="search_box">

@@ -15,7 +15,9 @@ def menu_detail(request, menu_id):
 
 def restaurant_detail(request, restaurant_id):
     this_restaurant = get_object_or_404(Restaurant, pk=restaurant_id)
-    return render(request, 'info_edit/detail.html', {'this_restaurant': this_restaurant})
+    menu_list = get_list_or_404(RestaurantMenu, sub_restaurant=this_restaurant)
+    return render(request, 'info_edit/detail.html', {'this_restaurant': this_restaurant,
+                                                     'menu_list': menu_list})
 
 
 def vote(request, question_id):
