@@ -1,2 +1,6 @@
 # Project exclude paths
 /venv/
+make_page/__pycache__/
+make_page/migrations/__pycache__/
+templates/
+to_miyazaki/__pycache__/
