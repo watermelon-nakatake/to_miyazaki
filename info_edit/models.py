@@ -41,6 +41,10 @@ class OriginalMImages(models.Model):
 """
 
 
+class UserAccount(models.Model):
+    mail_address = models.CharField(max_length=10)
+
+
 class CityName(models.Model):
     city_name_text = models.CharField(max_length=10)
 
@@ -64,6 +68,7 @@ class Genre(models.Model):
 
 
 class Restaurant(models.Model):
+    user = models.ForeignKey(UserAccount, on_delete=models.CASCADE)
     restaurant_name_text = models.CharField(max_length=20)
     pub_date = models.DateTimeField('date published')
     mod_date = models.DateTimeField('date modified')

@@ -3,7 +3,7 @@ from django import forms
 
 
 class PostCreateForm(forms.ModelForm):
-    parent_category = forms.ModelChoiceField(label='city_name', queryset=CityName, required=False)
+    parent_category = forms.ModelChoiceField(label='city_name', queryset=CityName.objects, required=False)
 
     class Meta:
         model = Restaurant

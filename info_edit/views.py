@@ -40,13 +40,24 @@ def edit_main_info(request, restaurant_id):
     店が店舗情報をインプットする画面を表示
     """
     restaurant = get_list_or_404(Restaurant, pk=restaurant_id)
-    genre_list = Genre.objects.all()
-    city_list = CityName.objects.all()
-    form_class = PostCreateForm
-    return render(request, 'info_edit/main_info.html', {'restaurant_id': restaurant_id, 'genre_list': genre_list,
-                                                        'city_list': city_list, 'form_class': form_class})
+    form_class = PostCreateForm(request.GET or None)
+    if form_class.is_valid():
+        message = 'データ検証に成功しました'
+    else:
+        message = 'データ検証に失敗しました'
+    context = {'restaurant_id': restaurant_id, 'form': form_class, 'message': message}
+    return render(request, 'info_edit/edit_main_info.html', context)
 
 
-
-
-
+def make_main_info(request, restaurant_id):
+    """
+    店が店舗情報をインプットする画面を表示
+    """
+    restaurant = get_list_or_404(Restaurant, pk=restaurant_id)
+    form_class = PostCreateForm(request.GET or None)
+    if form_class.is_valid():
+        message = 'データ検証に成功しました'
+    else:
+        message = 'データ検証に失敗しました'
+    context = {'restaurant_id': restaurant_id, 'form': form_class, 'message': message}
+    return render(request, 'info_edit/edit_main_info.html', context)

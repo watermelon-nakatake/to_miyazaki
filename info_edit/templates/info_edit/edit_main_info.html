@@ -18,12 +18,12 @@
 				<textarea name="" rows="1" cols="30"></textarea>
 			</label>
 		</div>
+	{{ form.errors.restauranta_name_text }}
+	<label>{{ form.restaurant_name_text.label }}{{ form.restaurant_name_text }}</label>
 		<div class="restaurant_data_base">
 			<label>ジャンル
 				<select>
-					{% for genre_choice in genre_list %}
-						<option value="g{{ genre_choice.pk }}">{{ genre_choice.genre_text }}</option>
-					{% endfor %}
+
 				</select>
 			</label>
 		</div>
