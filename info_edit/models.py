@@ -1,8 +1,7 @@
 from django.db import models
-import re
-from PIL import Image
 import os
 from stdimage.models import StdImageField
+from django import forms
 
 """
 class OriginalRImages(models.Model):
@@ -84,27 +83,43 @@ class RestaurantMenu(models.Model):
     menu_name_text = models.CharField(max_length=100)
     menu_comment_text = models.CharField(max_length=300)
     menu_price = models.IntegerField(default=0, blank=True)
+    image_num = models.IntegerField(default=0)
 
     def __str__(self):
         return self.menu_name_text
 
 
 def make_upload_path(instance, file_name):
-    prefix = '/images/'
-    print(instance)
-    print(file_name)
+    prefix = 'images/'
     user_id = instance.sub_restaurant.pk
     image_num = instance.sub_restaurant.image_num
     ext = os.path.splitext(file_name)[-1]
     return '{}r{}_{}{}'.format(prefix, str(user_id).zfill(5), str(image_num).zfill(3), ext)
 
 
+def make_menu_upload_path(instance, file_name):
+    prefix = 'images/'
+    user_id = instance.sub_menu.pk
+    image_num = instance.sub_menu.image_num
+    ext = os.path.splitext(file_name)[-1]
+    return '{}m{}_{}{}'.format(prefix, str(user_id).zfill(5), str(image_num).zfill(3), ext)
+
+
 class RestaurantImage(models.Model):
     image = StdImageField(upload_to=make_upload_path, blank=True, null=True,
                           variations={'large': (600, 400), 'thumbnail': (150, 100)})
     sub_restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
+    title = models.CharField(max_length=20, blank=True)
 
 
 class MenuImage(models.Model):
-    image = models.ImageField(upload_to='images/', blank=True, null=True)
+    image = StdImageField(upload_to=make_menu_upload_path, blank=True, null=True,
+                          variations={'large': (600, 400), 'thumbnail': (150, 100)})
     sub_menu = models.ForeignKey(RestaurantMenu, on_delete=models.CASCADE)
+    title = models.CharField(max_length=20, blank=True)
+
+
+class RestaurantImageForm(forms.ModelForm):
+    class Meta:
+        models = RestaurantImage
+        fields = ['image', 'title', 'sub_restaurant']

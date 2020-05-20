@@ -9,7 +9,9 @@
 </head>
 <body>
 <h1>店情報記入画面</h1>
-<form action="" method="post">
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+<form action="{% url 'info_edit:edit_main_info'  restaurant_id %}" method="post">
+	{% csrf_token %}
 	<div>
 		<div class="restaurant_data_base">
 			<label>店名
@@ -19,11 +21,9 @@
 		<div class="restaurant_data_base">
 			<label>ジャンル
 				<select>
-					<option value="jap">和食</option>
-					<option value="jap">和食</option>
-					<option value="jap">和食</option>
-					<option value="jap">和食</option>
-					<option value="jap">和食</option>
+					{% for genre_choice in genre_list %}
+						<option value="g{{ genre_choice.pk }}">{{ genre_choice.genre_text }}</option>
+					{% endfor %}
 				</select>
 			</label>
 		</div>
@@ -86,7 +86,7 @@
 		</div>
 		<div class="restaurant_data_base">
 			<label>保存
-			<input type="submit" value="save"></label>
+				<input type="submit" value="save"></label>
 		</div>
 	</div>
 </form>
