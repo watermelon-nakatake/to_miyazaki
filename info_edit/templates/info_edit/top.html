@@ -57,8 +57,18 @@
 	</form>
 </section>
 <div>
-	<p>こちらに掲載したい飲食店様は、こちらからログインしてご記入ください。
-		<a href="">飲食店ログイン</a></p>
+	<p>こちらに掲載したい飲食店様は、こちらからログインしてご記入ください。</p>
+
+
+	{% if user.is_authenticated %}
+		<p><a href="{% url 'admin:index' %}">admin</a></p>
+		<p><a href="{% url 'info_edit:make_main_info' %}">新規作成</a></p>
+		<p><a href="{% url 'info_edit:edit_main_info' %}">編集</a></p>
+		<p><a href="{% url 'logout' %}">ログアウト</a></p>
+	{% else %}
+		<p><a href="{% url 'accounts:signup' %}">サインアップ</a></p>
+		<p><a href="{% url 'login' %}">ログイン</a></p>
+	{% endif %}
 </div>
 </body>
 </html>

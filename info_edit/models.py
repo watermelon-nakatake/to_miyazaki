@@ -2,47 +2,11 @@ from django.db import models
 import os
 from stdimage.models import StdImageField
 from django import forms
-
-"""
-class OriginalRImages(models.Model):
-    image = models.ImageField(upload_to='original_images/', blank=True, null=True)
-
-    def __str__(self):
-        image_path = re.sub(r'^.*original_images/', '', self.image.path)
-        return image_path
-
-    def resize_image(self, restaurant_id, size):
-        img = Image.open(self.image.path)
-        image_resize = img.resize(size, Image.LANCZOS)
-        this_restaurant = Restaurant.objects.get(pk=restaurant_id)
-        image_num = this_restaurant.image_num
-        image_path = '../images/r{}_{}{}'.format(str(restaurant_id).zfill(5), str(image_num + 1).zfill(3),
-                                                 os.path.splitext(self.image.path)[1])
-        image_resize.save(image_path)
-        return image_path.replace('../', '')
+from django.contrib.auth.models import User
 
 
-class OriginalMImages(models.Model):
-    image = models.ImageField(upload_to='original_images/', blank=True, null=True)
-
-    def __str__(self):
-        image_path = re.sub(r'^.*original_images/', '', self.image.path)
-        return image_path
-
-    def resize_image(self, menu_id, size):
-        img = Image.open(self.image.path)
-        image_resize = img.resize(size, Image.LANCZOS)
-        this_menu = RestaurantMenu.objects.get(pk=menu_id)
-        image_num = this_menu.image_num
-        image_path = '../images/m{}_{}{}'.format(str(menu_id).zfill(5), str(image_num + 1).zfill(3),
-                                                 os.path.splitext(self.image.path)[1])
-        image_resize.save(image_path)
-        return image_path.replace('../', '')
-"""
-
-
-class UserAccount(models.Model):
-    mail_address = models.CharField(max_length=10)
+class RestaurantStaff(models.Model):
+    user = models
 
 
 class CityName(models.Model):
@@ -68,14 +32,14 @@ class Genre(models.Model):
 
 
 class Restaurant(models.Model):
-    user = models.ForeignKey(UserAccount, on_delete=models.CASCADE)
+    user_account = models.ForeignKey(User, on_delete=models.CASCADE)
     restaurant_name_text = models.CharField(max_length=20)
     pub_date = models.DateTimeField('date published')
     mod_date = models.DateTimeField('date modified')
     restaurant_address = models.CharField(max_length=200)
     restaurant_city = models.ForeignKey(CityName, on_delete=models.CASCADE)
-    city_area = models.ForeignKey(CityArea, on_delete=models.CASCADE)
-    restaurant_genre = models.ForeignKey(Genre, on_delete=models.CASCADE)
+    city_area = models.ManyToManyField(CityArea)
+    restaurant_genre = models.ManyToManyField(Genre)
     restaurant_comment = models.CharField(max_length=300, blank=True)
     image_num = models.IntegerField(default=0)
 

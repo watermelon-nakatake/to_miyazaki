@@ -10,7 +10,7 @@
 <body>
 <h1>店情報記入画面</h1>
 {% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
-<form action="{% url 'info_edit:edit_main_info'  restaurant_id %}" method="post">
+<form action="{% url 'info_edit:edit_main_info' %}" method="post">
 	{% csrf_token %}
 	<div>
 		<div class="restaurant_data_base">

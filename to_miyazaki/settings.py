@@ -29,6 +29,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'accounts.apps.AccountsConfig',
     'info_edit.apps.InfoEditConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -123,3 +124,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/'
+
+LOGIN_REDIRECT_URL = '/user/make_main/'
+
+AUTH_USER_MODEL = 'account.User'
