@@ -29,7 +29,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
-    'accounts.apps.AccountsConfig',
+    'register.apps.RegisterConfig',
     'info_edit.apps.InfoEditConfig',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -125,6 +125,10 @@ STATIC_URL = '/static/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = '/'
 
-LOGIN_REDIRECT_URL = '/user/make_main/'
+LOGIN_URL = 'register:login'
+LOGIN_REDIRECT_URL = 'info_edit:user_top'
 
-AUTH_USER_MODEL = 'account.User'
+AUTH_USER_MODEL = 'register.User'
+
+# メールをコンソールに表示する
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

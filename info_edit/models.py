@@ -2,7 +2,7 @@ from django.db import models
 import os
 from stdimage.models import StdImageField
 from django import forms
-from django.contrib.auth.models import User
+from register.models import User
 
 
 class RestaurantStaff(models.Model):
@@ -32,7 +32,7 @@ class Genre(models.Model):
 
 
 class Restaurant(models.Model):
-    user_account = models.ForeignKey(User, on_delete=models.CASCADE)
+    user_account = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
     restaurant_name_text = models.CharField(max_length=20)
     pub_date = models.DateTimeField('date published')
     mod_date = models.DateTimeField('date modified')

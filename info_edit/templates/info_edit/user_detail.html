@@ -1,0 +1,19 @@
+{% extends "register/base.html" %}
+{% block content %}
+<table class="table">
+    <tbody>
+        <tr>
+            <th>ユーザー名</th>
+            <td>{{ user.email }}</td>
+        </tr>
+        <tr>
+            <ht>レストラン名</ht>
+	        <td>{{ restaurant_form.restaurant_name_text }}</td>
+        </tr>
+    <tr>
+            <ht>所在地</ht>
+	        <td>{{ restaurant_form.restaurant_city }}</td>
+        </tr>
+    </tbody>
+</table>
+{% endblock %}

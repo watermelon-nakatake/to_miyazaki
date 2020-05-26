@@ -1,12 +1,5 @@
-<!DOCTYPE html>
-<html lang="ja">
-{% load static %}
-<head>
-	<meta charset="UTF-8">
-	<title>テイクアウト宮崎</title>
-	<link rel="stylesheet" type="text/css" href="{% static  'info_edit/style.css' %}">
-</head>
-<body>
+{% extends "register/base.html" %}
+{% block content %}
 <h1>テイクアウト宮崎</h1>
 <section id="search_box">
 	<h2>検索</h2>
@@ -59,16 +52,4 @@
 <div>
 	<p>こちらに掲載したい飲食店様は、こちらからログインしてご記入ください。</p>
 
-
-	{% if user.is_authenticated %}
-		<p><a href="{% url 'admin:index' %}">admin</a></p>
-		<p><a href="{% url 'info_edit:make_main_info' %}">新規作成</a></p>
-		<p><a href="{% url 'info_edit:edit_main_info' %}">編集</a></p>
-		<p><a href="{% url 'logout' %}">ログアウト</a></p>
-	{% else %}
-		<p><a href="{% url 'accounts:signup' %}">サインアップ</a></p>
-		<p><a href="{% url 'login' %}">ログイン</a></p>
-	{% endif %}
-</div>
-</body>
-</html>
+{% endblock %}

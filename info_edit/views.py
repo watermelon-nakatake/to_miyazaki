@@ -4,6 +4,61 @@ from .models import RestaurantImage, MenuImage, Restaurant, RestaurantMenu, Genr
 from .forms import MakeRestaurantMain
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.base_user import AbstractBaseUser
+from django.conf import settings
+from django.contrib.auth import get_user_model
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.views import LoginView, LogoutView
+from django.contrib.sites.shortcuts import get_current_site
+from django.core.signing import BadSignature, SignatureExpired, loads, dumps
+from django.shortcuts import redirect, resolve_url
+from django.template.loader import render_to_string
+from django.views import generic
+from register.forms import LoginForm, UserCreateForm
+from .forms import UserUpdateForm, UserCreateForm
+
+User = get_user_model()
+
+
+class OnlyYouMixin(UserPassesTestMixin):
+    raise_exception = True
+
+    def test_func(self):
+        user = self.request.user
+        return user.pk == self.kwargs['pk'] or user.is_superuser
+
+
+class Top(generic.TemplateView):
+    template_name = 'info_edit/top.html'
+
+
+class UserDetail(OnlyYouMixin, generic.DetailView, generic.edit.ModelFormMixin):
+    model = User
+    template_name = 'info_edit/user_detail.html'
+    fields = '__all__'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        restaurant_id = Restaurant(user_account_id=self.kwargs['pk'])
+        context.update({
+            'restaurant_form': UserCreateForm(**self.get_form_kwargs()),
+        })
+        return context
+
+
+class UserCreate(generic.CreateView):
+    model = Restaurant
+    form_class = UserCreateForm
+    template_name = 'info_edit/user_create.html'
+    success_url = '/user/top/'
+
+
+class UserUpdate(OnlyYouMixin, generic.UpdateView):
+    model = Restaurant
+    form_class = UserUpdateForm
+    template_name = 'info_edit/user_form.html'
+
+    def get_success_url(self):
+        return resolve_url('info_edit:user_detail', pk=self.kwargs['pk'])
 
 
 def index(request):
@@ -69,5 +124,3 @@ def make_main_info(request):
         message = 'データ検証に失敗しました'
     context = {'form': form_class, 'message': message}
     return render(request, 'info_edit/make_main_info.html', context)
-
-
