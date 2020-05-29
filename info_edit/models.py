@@ -3,6 +3,7 @@ import os
 from stdimage.models import StdImageField
 from django import forms
 from register.models import User
+from django.conf import settings
 
 
 class RestaurantStaff(models.Model):
@@ -10,7 +11,7 @@ class RestaurantStaff(models.Model):
 
 
 class CityName(models.Model):
-    city_name_text = models.CharField(max_length=10)
+    city_name_text = models.CharField('市区町村', max_length=10)
 
     def __str__(self):
         return self.city_name_text
@@ -32,15 +33,15 @@ class Genre(models.Model):
 
 
 class Restaurant(models.Model):
-    user_account = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
-    restaurant_name_text = models.CharField(max_length=20)
-    pub_date = models.DateTimeField('date published')
-    mod_date = models.DateTimeField('date modified')
-    restaurant_address = models.CharField(max_length=200)
-    restaurant_city = models.ForeignKey(CityName, on_delete=models.CASCADE)
-    city_area = models.ManyToManyField(CityArea)
-    restaurant_genre = models.ManyToManyField(Genre)
-    restaurant_comment = models.CharField(max_length=300, blank=True)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, null=True)
+    restaurant_name_text = models.CharField('店名', max_length=20)
+    pub_date = models.DateTimeField('作成日時', auto_now_add=True)
+    mod_date = models.DateTimeField('更新日時', auto_now=True)
+    restaurant_address = models.CharField('所在地', max_length=200)
+    restaurant_city = models.ForeignKey(CityName, on_delete=models.CASCADE, verbose_name='市区町村')
+    city_area = models.ManyToManyField(CityArea, verbose_name='エリア')
+    restaurant_genre = models.ManyToManyField(Genre, verbose_name='ジャンル')
+    restaurant_comment = models.CharField('コメント', max_length=300, blank=True)
     image_num = models.IntegerField(default=0)
 
     def __str__(self):
@@ -49,9 +50,9 @@ class Restaurant(models.Model):
 
 class RestaurantMenu(models.Model):
     sub_restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
-    menu_name_text = models.CharField(max_length=100)
-    menu_comment_text = models.CharField(max_length=300)
-    menu_price = models.IntegerField(default=0, blank=True)
+    menu_name_text = models.CharField('料理名', max_length=100)
+    menu_comment_text = models.CharField('コメント', max_length=300)
+    menu_price = models.IntegerField('価格', default=0, blank=True)
     image_num = models.IntegerField(default=0)
 
     def __str__(self):

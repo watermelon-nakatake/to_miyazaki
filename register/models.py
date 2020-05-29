@@ -7,7 +7,7 @@ from django.utils import timezone
 
 
 class CustomUserManager(UserManager):
-    """ユーザーマネージャー"""
+    # ユーザーマネージャー
     use_in_migrations = True
 
     def _create_user(self, email, password, **extra_fields):
@@ -38,8 +38,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     """カスタムユーザーモデル."""
 
     email = models.EmailField(_('email address'), unique=True)
-    # first_name,last_name を restaurant_nam に変更
-    restaurant_name = models.CharField(_('restaurant name'), max_length=50, blank=True)
+    last_name = models.CharField(_('last name'), max_length=50, blank=True)
+    first_name = models.CharField(_('first name'), max_length=50, blank=True)
 
     is_staff = models.BooleanField(
         _('staff status'),
@@ -70,12 +70,12 @@ class User(AbstractBaseUser, PermissionsMixin):
     def get_full_name(self):
         """Return the first_name plus the last_name, with a space in
         between."""
-        full_name = self.restaurant_name
+        full_name = self.last_name + self.first_name
         return full_name.strip()
 
     def get_short_name(self):
         """Return the short name for the user."""
-        return self.restaurant_name
+        return self.last_name
 
     def email_user(self, subject, message, from_email=None, **kwargs):
         """Send an email to this user."""

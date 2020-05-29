@@ -1,5 +1,6 @@
-from .models import Restaurant, CityName, CityArea
+from .models import Restaurant, CityName
 from django import forms
+from django.contrib.auth.forms import UserChangeForm
 from register.models import User
 
 
@@ -16,12 +17,16 @@ class MakeRestaurantMain(forms.ModelForm):
             field.widget['class'] = 'form-control'
 
 
-class UserUpdateForm(forms.ModelForm):
+class RestaurantEditForm(forms.ModelForm):
     """ユーザー情報更新フォーム"""
 
     class Meta:
         model = Restaurant
-        exclude = ('user_account', 'pub_date', 'mod_date',)
+        exclude = ('user', 'pub_date', 'mod_date', 'image_num')
+        widgets = {
+            'city_area': forms.CheckboxSelectMultiple,
+            'restaurant_genre': forms.CheckboxSelectMultiple
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -29,14 +34,26 @@ class UserUpdateForm(forms.ModelForm):
             field.widget.attrs['class'] = 'form-control'
 
 
-class UserCreateForm(forms.ModelForm):
+class RestaurantCreateForm(forms.ModelForm):
     """レストラン情報新規作成フォーム"""
 
     class Meta:
         model = Restaurant
-        exclude = ('user_account', 'pub_date', 'mod_date',)
+        exclude = ('user', 'pub_date', 'mod_date', 'image_num')
+        widgets = {
+            'city_area': forms.CheckboxSelectMultiple,
+            'restaurant_genre': forms.CheckboxSelectMultiple
+        }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         for field in self.fields.values():
             field.widget.attrs['class'] = 'form-control'
+
+
+class UserEditForm(UserChangeForm):
+    password = None
+    """レストラン情報ページ用ユーザーフォーム"""
+    class Meta:
+        model = User
+        fields = ('last_name', 'first_name')

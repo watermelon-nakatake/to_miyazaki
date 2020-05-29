@@ -14,7 +14,8 @@ from django.shortcuts import redirect, resolve_url
 from django.template.loader import render_to_string
 from django.views import generic
 from register.forms import LoginForm, UserCreateForm
-from .forms import UserUpdateForm, UserCreateForm
+from .forms import RestaurantEditForm, RestaurantCreateForm, UserEditForm
+from django import forms
 
 User = get_user_model()
 
@@ -38,7 +39,6 @@ class UserDetail(OnlyYouMixin, generic.DetailView, generic.edit.ModelFormMixin):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        restaurant_id = Restaurant(user_account_id=self.kwargs['pk'])
         context.update({
             'restaurant_form': UserCreateForm(**self.get_form_kwargs()),
         })
@@ -54,7 +54,7 @@ class UserCreate(generic.CreateView):
 
 class UserUpdate(OnlyYouMixin, generic.UpdateView):
     model = Restaurant
-    form_class = UserUpdateForm
+    form_class = RestaurantEditForm
     template_name = 'info_edit/user_form.html'
 
     def get_success_url(self):
@@ -98,7 +98,51 @@ def restaurant_detail(request, restaurant_id):
 
 
 @login_required
-def edit_main_info(request, restaurant_id):
+def restaurant_create(request):
+    user_form = UserEditForm(request.POST or None, instance=request.user)
+    restaurant_form = RestaurantCreateForm(request.POST or None)
+    if request.method == 'POST' and user_form.is_valid() and restaurant_form.is_valid():
+
+        user = user_form.save(commit=False)
+        user.is_active = True
+        user.save()
+
+        restaurant = restaurant_form.save(commit=False)
+        restaurant.user = user
+        restaurant.save()
+        restaurant_form.save_m2m()
+        return redirect('info_edit:user_top')
+
+    context = {'user_form': user_form, 'restaurant_form': restaurant_form}
+    return render(request, 'info_edit/restaurant_create.html', context)
+
+
+@login_required
+def restaurant_edit(request):
+    user_form = UserEditForm(request.POST or None, instance=request.user)
+    this_restaurant = Restaurant.objects.get(user=request.user)
+    restaurant_form = RestaurantEditForm(request.POST or None, instance=this_restaurant)
+    user_and_restaurant_update(request, user_form, restaurant_form)
+
+    context = {'user_form': user_form, 'restaurant_form': restaurant_form}
+    return render(request, 'info_edit/restaurant_edit.html', context)
+
+
+def user_and_restaurant_update(request, user_form, restaurant_form):
+    if request.method == 'POST' and user_form.is_valid() and restaurant_form.is_valid():
+        user = user_form.save(commit=False)
+        user.is_active = True
+        user.save()
+
+        restaurant = restaurant_form.save(commit=False)
+        restaurant.user = user
+        restaurant.save()
+        restaurant_form.save_m2m()
+        return redirect('info_edit:user_top')
+
+
+@login_required
+def user_detail(request, restaurant_id):
     """
     店が店舗情報をインプットする画面を表示
     """
@@ -110,17 +154,3 @@ def edit_main_info(request, restaurant_id):
         message = 'データ検証に失敗しました'
     context = {'restaurant_id': restaurant_id, 'form': form_class, 'message': message}
     return render(request, 'info_edit/edit_main_info.html', context)
-
-
-@login_required
-def make_main_info(request):
-    """
-    店が店舗情報を最初にインプットする画面を表示
-    """
-    form_class = MakeRestaurantMain(request.GET or None)
-    if form_class.is_valid():
-        message = 'データ検証に成功しました'
-    else:
-        message = 'データ検証に失敗しました'
-    context = {'form': form_class, 'message': message}
-    return render(request, 'info_edit/make_main_info.html', context)
